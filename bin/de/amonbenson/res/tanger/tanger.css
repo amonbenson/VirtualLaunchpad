@@ -1,0 +1,439 @@
+.root {
+    -light: #f5f5f5;
+    -dark: #3c3c3c;
+    -tanger-accent: #f95e20;
+    
+    -fx-text-base-color: -light;
+    -fx-text-fill: -fx-text-base-color;
+    
+    -fx-font-family: "Sans Serif";
+    -fx-font-size: 13.0px;
+    -fx-focus-color: transparent;
+    -fx-background-color: -dark;
+}
+
+#padded-pane {
+	-fx-padding: 2.0;
+}
+
+.mnemonic-underline {
+    -fx-stroke: transparent;
+}
+
+.text {
+    -fx-font-smoothing-type: lcd;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Label, Hyperlink & Separator                                                *
+ *                                                                             *
+ ******************************************************************************/
+
+.label {
+    -fx-padding: 0.15em 0.1em;
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.label:disabled {
+    -fx-opacity: -fx-disabled-opacity;
+}
+
+.label:show-mnemonics > .mnemonic-underline {
+    -fx-stroke: -fx-text-base-color;
+} 
+
+.text {
+    -fx-effect:dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.2), 0.0, 0.0, 0.0, 1.0); 
+}
+
+.hyperlink {
+	-fx-text-fill: -tanger-accent;
+	-fx-text-underline: false;
+}
+
+.separator {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+	-fx-border-width: 0.0;
+}
+
+.separator *.line {
+	-fx-border-color: -light;
+	-fx-border-style: solid;
+	-fx-border-width: 0.5px;
+}
+
+.tooltip {
+	-fx-background-color: derive(-dark, 20%);
+	-fx-text-fill: -fx-text-base-color;
+	-fx-background-radius: 2.0;
+    -fx-background-insets: 0;
+    -fx-padding: 0.4em 0.7em;
+	-fx-effect: null;
+}
+
+
+
+/*******************************************************************************
+ *                                                                             *
+ * Button & ToggleButton                                                       *
+ *                                                                             *
+ ******************************************************************************/
+ 
+.toggle-button, .button{
+    -fx-background-color: -tanger-accent;
+    -fx-background-insets: 2.0;
+    -fx-background-radius: 2.0;
+    -fx-border-width: 0.0;
+    -fx-padding: 0.4em 0.7em;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+}
+
+.toggle-button:focused,
+.button:focused,
+.button:default:focused {
+	-fx-background-color: -tanger-accent;
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.toggle-button:selected,
+.toggle-button:focused:selected {
+	-fx-background-color: derive(-tanger-accent, -20.0%);
+	-fx-text-fill: derive(-fx-text-base-color, -20.0%);
+    -fx-background-insets: 2.5;
+}
+
+.toggle-button:armed,
+.button:armed,
+.button:default:armed {
+     -fx-background-color: derive(-tanger-accent, -20.0%);
+	-fx-text-fill: derive(-fx-text-base-color, -20.0%);
+}
+
+.ghost-button,
+.ghost-button:focused, .ghost-button:default:focused,
+.ghost-button:default:armed {
+	-fx-background-color: rgba(0, 0, 0, 0.2);
+	-fx-background-radius: 100%;
+    -fx-padding: 0.5em 0.5em;
+    -fx-opacity: 0.5;
+}
+
+.ghost-button:armed {
+	-fx-background-color: rgba(0, 0, 0, 0.4);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * TextField & TextArea                                                        *
+ *                                                                             *
+ ******************************************************************************/
+
+.text-area , .text-field {
+    -fx-background-color: white;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+    -fx-padding: 0.0;
+    -fx-border-width: 0.0;
+    -fx-prompt-text-fill: black;
+    -fx-highlight-fill: derive(-tanger-accent, 70%);
+}
+
+.text-area .text, .text-field > * > .text {
+    -fx-effect: null;
+    -fx-fill: black;
+}
+
+.text-area {
+	-fx-border-color: transparent;
+	-fx-background-color: transparent;
+}
+
+.text-area .content {
+    -fx-padding: 0.4em 0.7em;
+    -fx-border-width: 0.0;
+    -fx-background-color: white;
+}
+
+.scroll-bar:vertical > .track-background,
+.scroll-bar:horizontal > .track-background{
+    -fx-background-color: -light;
+    -fx-background-insets: 0.0;
+}
+
+.scroll-bar:vertical > .thumb,
+.scroll-bar:horizontal > .thumb {
+    -fx-background-color: -tanger-accent;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+}
+
+.scroll-bar:vertical > .thumb:armed,
+.scroll-bar:horizontal > .thumb:armed {
+    -fx-background-color: derive(-tanger-accent, -20%);
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+}
+
+.scroll-bar > .increment-button, 
+.scroll-bar > .decrement-button,
+.scroll-bar:hover > .increment-button, 
+.scroll-bar:hover > .decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-background-color: black;
+}
+
+.scroll-bar > .track-background{
+    -fx-background-color:transparent;
+}
+
+.scroll-pane > .corner {    
+    -fx-background-color: -light ;
+    -fx-background-insets: 0.0;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * ComboBox, ChoiceBox & ListView                                              *
+ *                                                                             *
+ ******************************************************************************/
+
+.popup-overlay {
+    -fx-background-color: -tanger-accent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0.0;
+    -fx-background-radius: 2.0;
+}
+
+.title-bar {
+    -fx-padding: 10;
+}
+
+.title-bar .title-label {
+    -fx-padding: 0 10 0 10;
+    -fx-alignment: center;
+    -fx-font-size: 36;
+    -fx-font-weight: bolder;
+}
+
+.content-area {
+    -fx-background-color: -dark;
+}
+
+.content-background {
+    -fx-background-color: -tanger-accent;
+    -fx-background-radius:0.0 0.0 11.0 11.0;
+    -fx-padding: 0 10 10 10;
+}
+
+.combo-box-base,
+.choice-box {
+    -fx-background-color: -tanger-accent;
+    -fx-background-insets: 2.0;
+    -fx-background-radius: 2.0;
+    -fx-border-width: 0.0;
+}
+
+.combo-box-base > .list-cell {
+	-fx-text-fill: -fx-text-base-color;
+	-fx-background-color: transparent;
+}
+
+.combo-box-base > combo-box-popup > list-view > list-cell {
+	-fx-text-fill: -fx-text-base-color;
+}
+
+.combo-box-base > .label,
+.choice-box-base > .label {
+    -fx-padding: 0.7em 1.7em 0.7em 0.7em;
+}
+
+.combo-box-base > .arrow-button, 
+.choice-box > .open-button {
+    -fx-padding: 0.4em 0.7em 0.4em 0.5em;
+    -fx-background-radius: 0.0 2.0 2.0 0.0;
+}
+
+.combo-box-base:pressed,
+.choice-box:pressed{
+    -fx-background-color: derive(-tanger-accent, -20.0%); 
+}
+
+.combo-box-base > .arrow-button > .arrow,
+.choice-box > .open-button > .arrow {
+    -fx-background-color: white;
+    -fx-padding: 0.2em;
+    -fx-effect: null;
+}
+
+.context-menu {
+    -fx-background-color: -light;
+    -fx-background-radius: 2.0;
+    -fx-effect: null;
+}
+
+.context-menu .label {
+    -fx-text-fill: -dark;
+}
+
+.radio-menu-item:checked > .left-container > .radio, 
+.check-menu-item:checked > .left-container > .check {
+    -fx-background-color: -dark;
+    -fx-padding: 0.68em 0.5em 0.0em 0.0em;
+    -fx-effect: null; 
+}
+
+.radio-menu-item > .left-container > .radio, 
+.check-menu-item > .left-container > .check {
+    -fx-background-color: transparent;
+    -fx-padding: 0.68em 0.68em 0.0em 0.0em;
+}
+
+.menu-item:focused {
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled {
+    -fx-text-fill: -dark;
+}
+
+.list-cell:even {
+    -fx-background-color: white;
+}
+
+.list-cell:odd {
+    -fx-background-color: derive(-light, 30%);
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: derive(-tanger-accent, 70%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CheckBox & RadioButton                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+.check-box {
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.radio-button {
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.check-box > .box,
+.check-box > .box.unfocused,
+.check-box:disabled > .box,
+.check-box:indeterminate > .box {
+    -fx-background-color: -light;
+    -fx-background-radius: 4.0;
+}
+
+.check-box:selected > .box > .mark,
+.check-box:indeterminate > .box > .mark {
+    -fx-background-color: transparent;
+}
+
+.check-box:selected > .box {
+    -fx-background-color: -tanger-accent;
+}
+
+.radio-button > .radio,
+.radio-button > .radio.unfocused,
+.radio-button:disabled > .radio,
+.radio-button:intermediate > .radio {
+    -fx-background-color: -fx-text-base-color;
+    -fx-padding: 0.4em;
+}
+
+.radio-button:selected > .radio {
+    -fx-background-color: -tanger-accent;
+}
+
+.radio-button:selected > .radio > .dot {
+    -fx-background-color: transparent;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * ProgressBar & ProgressIndicator                                             *
+ *                                                                             *
+ ******************************************************************************/
+
+.progress-bar > .track {
+    -fx-background-color: -fx-text-base-color;
+    -fx-background-radius: 2.0;
+}
+
+.progress-bar > .bar {
+    -fx-background-color: -tanger-accent;
+    -fx-background-radius: 2.0;
+    -fx-background-insets: 0.0;
+    -fx-border-width: 0.0;
+    -fx-effect: null;
+}
+
+.progress-bar:indeterminate > .bar {
+    -fx-background-color: derive(-tanger-accent, 20.0%);
+    -fx-background-radius: 2.0;
+    -fx-background-insets: 0.0;
+    -fx-border-width: 0.0;
+    -fx-effect: null;
+}
+
+.progress-indicator > .determinate-indicator > .indicator {
+    -fx-background-color: -light;
+    -fx-padding: 0.0;
+}
+
+.progress-indicator > .determinate-indicator > .progress {
+    -fx-background-color:  -tanger-accent;
+    -fx-background-insets: 0.0, 0.4em;
+    -fx-padding: 1.0em;
+}
+
+.progress-indicator > .determinate-indicator > .percentage {
+    -fx-fill: black;
+    -fx-translate-y: -2.4em;
+    -fx-padding: 0.0;
+}
+
+.progress-indicator > .indeterminate-indicator > .segment {
+   -fx-background-color: -tanger-accent; 
+   -fx-scale-x: 0.05em;
+   -fx-scale-y: 0.05em;
+}
+
+
+
+/*******************************************************************************
+ *                                                                             *
+ * Slider                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+.slider .track {
+	-fx-background-color: -light;
+	-fx-pref-height: 1px;
+}
+
+.slider:vertical .track {
+	-fx-background-color: -light;
+	-fx-pref-height: 1px;
+}
+
+.slider .thumb {
+	-fx-background-color: -tanger-accent;
+	-fx-pref-height: 20;
+    -fx-pref-width: 20;
+}
