@@ -20,7 +20,7 @@ public class LaunchpadCanvas extends Canvas {
 		TWO_ROWS, FOUR_ROWS
 	};
 
-	public static final double DEFAULT_SIZE = 400, CASE_ARC = 0.27, PAD_ARC = 0.08, PAD_FACT = 0.83, ROUND_FACT = 0.65;
+	public static final double DEFAULT_SIZE = 400, CASE_ARC = 0.27, PAD_ARC = 0.08, PAD_FACT = 0.83, ROUND_FACT = 0.65, SIDE_LED_W = 0.014, SIDE_LED_H = 0.024;
 	public static final Color CASE_COLOR = Color.rgb(30, 30, 30);
 	public static final Color PAD_COLOR = Color.rgb(80, 80, 80);
 
@@ -33,6 +33,7 @@ public class LaunchpadCanvas extends Canvas {
 	private int lastX, lastY;
 	
 	private CaseType caseType;
+	private boolean renderSideLED;
 
 	public LaunchpadCanvas() {
 		this(DEFAULT_SIZE);
@@ -129,7 +130,7 @@ public class LaunchpadCanvas extends Canvas {
 					if (x == y || 9 - x == y || ((x == 0 || y == 9) && caseType == CaseType.TWO_ROWS))
 						continue;
 
-					// Draw round buttons
+					// Render round buttons
 					double xOff = caseType == CaseType.TWO_ROWS ? 0 : 1;
 					double posX = (xOff + x - ROUND_FACT / 2) * padSize;
 					double posY = (1 + y - ROUND_FACT / 2) * padSize;
@@ -142,7 +143,7 @@ public class LaunchpadCanvas extends Canvas {
 
 				} else {
 
-					// Draw square buttons
+					// Render square buttons
 					double xOff = caseType == CaseType.TWO_ROWS ? 0 : 1;
 					double posX = (xOff + x - PAD_FACT / 2) * padSize;
 					double posY = (1 + y - PAD_FACT / 2) * padSize;
@@ -156,6 +157,14 @@ public class LaunchpadCanvas extends Canvas {
 					}
 				}
 			}
+		}
+		
+		// Render the side led
+		if (renderSideLED) {
+			g.setFill(getPadColor(pads[0][0]));
+			double dw = getWidth() * SIDE_LED_W;
+			double dh = getHeight() * SIDE_LED_H;
+			g.fillRect((getWidth() - dw) / 2, getHeight() - dh, dw, dh);
 		}
 
 		// Render the circle in the middle
@@ -338,6 +347,14 @@ public class LaunchpadCanvas extends Canvas {
 
 	public void setCaseType(CaseType caseType) {
 		this.caseType = caseType;
+	}
+
+	public boolean isRenderSideLED() {
+		return renderSideLED;
+	}
+
+	public void setRenderSideLED(boolean hasSideLED) {
+		this.renderSideLED = hasSideLED;
 	}
 
 	private Color getPadColor(Color col) {

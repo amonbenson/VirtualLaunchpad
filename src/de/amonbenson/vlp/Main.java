@@ -111,7 +111,8 @@ public class Main extends Application {
 			launchpadSelectorBox.setOnAction((Event event) -> setSelectedLaunchpadEmulator());
 			launchpadSelectorBox.setPrefWidth(Double.MAX_VALUE);
 			launchpadSelectorBox.getItems().addAll(LAUNCHPAD_TYPES);
-			launchpadSelectorBox.getSelectionModel().selectFirst();
+			//launchpadSelectorBox.getSelectionModel().selectFirst();
+			launchpadSelectorBox.getSelectionModel().select(2);
 			launchpadSelectorBox.setTooltip(new Tooltip("Select the type of Launchpad to be emulated."));
 			dropdownMenu.add(launchpadSelectorBox, 0, 1);
 
@@ -169,8 +170,13 @@ public class Main extends Application {
 
 			// Link the launchpad system to the emulated launchpad
 			lpSystem.setMidiInputListener((MidiMessage message, long tick) -> {
-				if (lpEmulator != null)
-					lpEmulator.processIncomingMessage(message);
+				try {
+					if (lpEmulator != null)
+						lpEmulator.processIncomingMessage(message);
+				} catch (ArrayIndexOutOfBoundsException ex) {
+					System.err.println("Unknown button position, trying to continue.");
+					ex.printStackTrace();
+				}
 			});
 
 			// Link the launchpad canvas to the emulated launchpad
@@ -328,14 +334,17 @@ public class Main extends Application {
 		// support
 		if (index == 0) {
 			launchpadPane.getCanvas().setCaseType(CaseType.TWO_ROWS);
+			launchpadPane.getCanvas().setRenderSideLED(false);
 			lpEmulator = new LaunchpadMiniEmulator();
 		}
 		if (index == 1) {
 			launchpadPane.getCanvas().setCaseType(CaseType.TWO_ROWS);
+			launchpadPane.getCanvas().setRenderSideLED(false);
 			lpEmulator = new LaunchpadMK2Emulator();
 		}
 		if (index == 2) {
 			launchpadPane.getCanvas().setCaseType(CaseType.FOUR_ROWS);
+			launchpadPane.getCanvas().setRenderSideLED(true);
 			lpEmulator = new LaunchpadProEmulator();
 		}
 
@@ -386,8 +395,8 @@ public class Main extends Application {
 
 	public void selectDummyValue() {
 		// Selects a dummy value for info
-		inputSelectorBox.getSelectionModel().select("Input");
-		outputSelectorBox.getSelectionModel().select("Output");
+		inputSelectorBox.getSelectionModel().select("MOSI1");//"Input");
+		outputSelectorBox.getSelectionModel().select("MISO1");//"Output");
 	}
 
 	private void showAboutWindow() {
