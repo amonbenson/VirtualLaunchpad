@@ -22,7 +22,7 @@ public class LaunchpadCanvas extends Canvas {
 
 	public static final double DEFAULT_SIZE = 400, CASE_ARC = 0.27, PAD_ARC = 0.08, PAD_FACT = 0.83, ROUND_FACT = 0.65;
 	public static final Color CASE_COLOR = Color.rgb(30, 30, 30);
-	public static final Color PAD_COLOR = Color.rgb(90, 90, 90);
+	public static final Color PAD_COLOR = Color.rgb(80, 80, 80);
 
 	private Color[][] pads;
 
