@@ -118,8 +118,7 @@
 .ghost-button:default:armed {
 	-fx-background-color: rgba(0, 0, 0, 0.2);
 	-fx-background-radius: 100%;
-    -fx-padding: 0.5em 0.5em;
-    -fx-opacity: 0.5;
+    -fx-padding: 0.2em 0.2em;
 }
 
 .ghost-button:armed {

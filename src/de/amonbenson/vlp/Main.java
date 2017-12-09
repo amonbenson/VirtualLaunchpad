@@ -2,6 +2,8 @@ package de.amonbenson.vlp;
 
 import java.awt.Desktop;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
@@ -19,6 +21,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -30,6 +33,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -51,17 +56,19 @@ public class Main extends Application {
 
 	public static final int STATE_RETRACTED = 0, STATE_EXTENDED = 1;
 
-	public static final String[] LAUNCHPAD_TYPES = new String[] { "Launchpad Mini" };//, "Launchpad MK2", "Launchpad Pro" };
+	public static final String[] LAUNCHPAD_TYPES = new String[] { "Launchpad Mini", "Launchpad MK2", "Launchpad Pro" };
 
 	private Stage primaryStage;
 	private BorderPane root;
 
+	private VerticalExtensionTransition dropdownMenuTransition;
+	private LaunchpadCanvasRotationTransition launchpadCanvasRotationTransition;
+
 	private GridPane dropdownMenu;
-	VerticalExtensionTransition dropdownMenuTransition;
 	private int dropdownMenuState;
 
 	private ComboBox launchpadSelectorBox, inputSelectorBox, outputSelectorBox;
-	private Button rescan, dropdownTrigger, about;
+	private Button rescan, dropdownTrigger, about, rotate;
 
 	private HBox modeSelectorBox;
 	private ToggleGroup modeSelectorGroup;
@@ -70,6 +77,8 @@ public class Main extends Application {
 
 	private LaunchpadSystem lpSystem;
 	private LaunchpadEmulator lpEmulator;
+
+	private boolean wasLPCanvasFocused = false;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -135,7 +144,7 @@ public class Main extends Application {
 			dropdownTrigger = new GhostButton(RESOURCE_FOLDER + "icons/dropdown.png");
 			dropdownTrigger.setTooltip(new Tooltip("show / hide Menu"));
 			dropdownTrigger.setRotate(180);
-			dropdownTrigger.setOnAction((ActionEvent event) -> {
+			dropdownTrigger.setOnAction((event) -> {
 				if (dropdownMenuState == STATE_EXTENDED)
 					retractMenu();
 				if (dropdownMenuState == STATE_RETRACTED)
@@ -143,12 +152,17 @@ public class Main extends Application {
 			});
 
 			about = new GhostButton(RESOURCE_FOLDER + "icons/about.png");
-			about.setOnAction((ActionEvent event) -> showAboutWindow());
+			about.setOnAction((event) -> showAboutWindow());
 			about.setTooltip(new Tooltip("About"));
 
-			launchpadPane.getChildren().addAll(dropdownTrigger, about);
+			rotate = new GhostButton(RESOURCE_FOLDER + "icons/rotate.png");
+			rotate.setOnAction((event) -> launchpadCanvasRotationTransition.rotateClockwise());
+			rotate.setTooltip(new Tooltip("Rotate Launchpad clockwise"));
+
+			launchpadPane.getChildren().addAll(dropdownTrigger, about, rotate);
 			AnchorPane.setLeftAnchor(dropdownTrigger, 0.0);
 			AnchorPane.setRightAnchor(about, 0.0);
+			AnchorPane.setBottomAnchor(rotate, 0.0);
 
 			// Scan for all the midi devices
 			rescanMidi();
@@ -217,9 +231,16 @@ public class Main extends Application {
 				selectDummyValue();
 
 				// Start the dropdown menu extension transition
+				List<Node> fadeNodes = new ArrayList<Node>();
+				fadeNodes.add(dropdownTrigger);
+				fadeNodes.add(about);
+				fadeNodes.add(rotate);
 				dropdownMenuState = STATE_EXTENDED;
-				dropdownMenuTransition = new VerticalExtensionTransition(dropdownMenu, dropdownTrigger,
+				dropdownMenuTransition = new VerticalExtensionTransition(dropdownMenu, dropdownTrigger, fadeNodes,
 						VerticalExtensionTransition.DIRECTION_RETRACT, dropdownMenu.getHeight());
+
+				// Start the launchpad pane rotation transition
+				launchpadCanvasRotationTransition = new LaunchpadCanvasRotationTransition(launchpadPane.getCanvas());
 
 				// Create launchpad mode selector buttons
 				setLPModes(lpEmulator.getModes(), lpEmulator.getSelectedModeIndex());
@@ -231,14 +252,38 @@ public class Main extends Application {
 				lpCanvasTimer.start();
 			});
 
-			// Create a scene and show the stage
+			// Create a scene
 			Scene scene = new Scene(root, 500, 500);
 			scene.getStylesheets().add(RESOURCE_FOLDER + "tanger/tanger.css");
+
+			// Global key events
+			scene.addEventFilter(KeyEvent.KEY_PRESSED, (event) -> {
+				if (event.getCode() == KeyCode.F11) {
+					primaryStage.setFullScreen(!primaryStage.isFullScreen());
+					primaryStage.setAlwaysOnTop(false); // Maybe a bug? we have to re set always on
+					primaryStage.setAlwaysOnTop(true); // top after toggeling fullscreen
+					event.consume();
+				}
+			});
+
+			/*
+			 * ---- not really working ---- // Defocus application when mouse
+			 * position is not on launchpad // canvas, focus when it is
+			 * scene.setOnMouseMoved((e) -> { boolean isLPCanvasFocused =
+			 * e.getTarget().getClass() == LaunchpadCanvas.class; if
+			 * (isLPCanvasFocused && !wasLPCanvasFocused) { // Focus gained
+			 * primaryStage.requestFocus(); } else if (!isLPCanvasFocused &&
+			 * wasLPCanvasFocused) { // Focus lost primaryStage.toBack(); }
+			 * wasLPCanvasFocused = isLPCanvasFocused; });
+			 */
+
+			// Show the stage
 			primaryStage.setScene(scene);
-			primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResource("de/amonbenson/res/icons/favicon.png").toExternalForm()));
+			primaryStage.getIcons().add(new Image(
+					getClass().getClassLoader().getResource("de/amonbenson/res/icons/favicon.png").toExternalForm()));
 			primaryStage.setAlwaysOnTop(true);
-			primaryStage.setMinWidth(200);
-			primaryStage.setMinHeight(200);
+			primaryStage.setMinWidth(100);
+			primaryStage.setMinHeight(150);
 			primaryStage.show();
 
 		} catch (Exception e) {
@@ -314,10 +359,11 @@ public class Main extends Application {
 
 		// Open the selected midi device
 		lpSystem.openOutput(index);
-		
+
 		// Update the title to match the output port
 		Object item = outputSelectorBox.getSelectionModel().getSelectedItem();
-		if (item != null) primaryStage.setTitle(TITLE + " -> " + item.toString());
+		if (item != null)
+			primaryStage.setTitle(TITLE + " -> " + item.toString());
 	}
 
 	public void rescanMidi() {
@@ -333,7 +379,7 @@ public class Main extends Application {
 
 		// Select dummy info value
 		selectDummyValue();
-		
+
 		// Reset title
 		primaryStage.setTitle(TITLE);
 	}
@@ -362,7 +408,8 @@ public class Main extends Application {
 
 		root.getChildren().add(new Separator());
 
-		root.getChildren().add(new Label("Version: " + VERSION + "\n" + "Created and designed by: Amon Benson (SchlegelFlegel)\n"));
+		root.getChildren().add(
+				new Label("Version: " + VERSION + "\n" + "Created and designed by: Amon Benson (SchlegelFlegel)\n"));
 
 		Button ok = new Button("      OK      ");
 		ok.setOnAction((ActionEvent event) -> about.close());
